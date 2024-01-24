@@ -6,42 +6,157 @@
   <script id="challenge">
     // 👉 CHALLENGE 1
     
-    function profileActivation(testProfile, result) {
-      let testProfile = {
-  active: false,
-  reason: "Not logged in for 30 days"
-};
-let testProfile = {
-  active: true,
-  reason: undefined
-};
-
-let result = profileActivation(testProfile, "Not logged in for 30 days");
-let result = profileActivation(testProfile);
+    function profileActivation(profile, reason) {
+  if (profile.active) {
+    // Profile is currently active
+    if (reason === undefined) {
+      // No reason provided, return a message to confirm status manually
+      return "confirm status manually";
+    } else {
+      // Set the profile to inactive and assign the provided reason
+      return {
+        active: false,
+        reason: reason
+      };
     }
+  } else {
+    // Profile is currently inactive
+    // Set the profile to active and remove the reason property
+    delete profile.reason;
+    return {
+      active: true
+    };
+  }
+}
 
-    let testProfile = {
-  active: true,
-  reason: undefined
-};
+// Example usage:
+const user1 = { active: true, reason: "account suspended" };
+const user2 = { active: false, reason: "password reset" };
 
-let result = profileActivation(testProfile);
+console.log(profileActivation(user1, "new reason")); 
+// Output: { active: false, reason: "new reason" }
+
+console.log(profileActivation(user2)); 
+// Output: { active: true }
 
 
     // 👉 CHALLENGE 2
     function mineSweeper(grid, x, y) {
+  // Check if coordinates are valid
+  if (x < 1 || x > 3 || y < 1 || y > 3) {
+    return "invalid coordinates";
+  }
+
+  // Get the value at the specified coordinates
+  const cellValue = grid[y - 1][x - 1];
+
+  // Check the value and return the appropriate result
+  if (cellValue === "🟥") {
+    return "🟥 💀";
+  } else if (cellValue === "🟦") {
+    return "🟦 🥳";
+}
+
+// Example usage:
+const gameGrid = [ 
+  ["🟥", "🟦", "🟥"],
+  ["🟦", "🟥", "🟥"],
+  ["🟥", "🟦", "🟦"]
+];
+
+console.log(mineSweeper(gameGrid, 2, 2)); 
+// Output: "🟦 🥳"
+
+console.log(mineSweeper(gameGrid, 1, 3)); 
+// Output: "🟥 💀"
+
+console.log(mineSweeper(gameGrid, 4, 2)); 
+// Output: "invalid coordinates"
 
     }
 
     // 👉 CHALLENGE 3
     function booleanize(obj) {
-
+  // Loop through each property in the object
+  for (const prop in obj) {
+    // Check if property name exceeds 9 characters
+    if (prop.length > 9) {
+      return "shorten all prop names to 9 chars or less";
     }
+
+    // Transform values based on requirements
+    if (obj[prop] === 0) {
+      obj[prop] = false;
+    } else if (obj[prop] === 1) {
+      obj[prop] = true;
+    } else if (obj[prop] === null) {
+      // Delete the key-value pair if the value is null
+      delete obj[prop];
+    }
+    // Other values are not affected
+  }
+
+  // Return the modified object
+  return obj;
+}
+
+// Example usage:
+const inputObject = {
+  count: 1,
+  status: 0,
+  isActive: 1,
+  score: null,
+  description: "some text"
+};
+
+console.log(booleanize(inputObject));
+// Output: { count: true, status: false, isActive: true, description: "some text" }
+
+const longPropertyNameObject = {
+  tooLongPropertyName: 1,
+  anotherProp: "value"
+};
+
+console.log(booleanize(longPropertyNameObject));
+// Output: "shorten all prop names to 9 chars or less"
 
     // 👉 CHALLENGE 4
     function scrub(text, forbidden) {
+  // Check if text is empty or there are no forbidden words
+  if (text === "" || forbidden.length === 0) {
+    return text;
+  }
 
+  // Split the text into words
+  const words = text.split(/\s+/);
+
+  // Iterate through each word
+  const scrubbedText = words.map(word => {
+    // Check if the word is in the forbidden array
+    if (forbidden.includes(word.toLowerCase())) {
+      // Replace the word with "x" characters of equal length
+      return "x".repeat(word.length);
+    } else {
+      return word;
     }
+  });
+
+  // Join the scrubbed words back into a string
+  return scrubbedText.join(" ");
+}
+
+// Example usage:
+const inputText = "This is a sensitive text with secret information.";
+const forbiddenWords = ["sensitive", "secret"];
+
+console.log(scrub(inputText, forbiddenWords));
+// Output: "This is a xxxxxxxxx text with xxxxx information."
+
+console.log(scrub("", forbiddenWords));
+// Output: ""
+
+console.log(scrub(inputText, []));
+// Output: "This is a sensitive text with secret information."
 
     // 👉 CHALLENGE 5 (bonus, NOT graded)
     function normalizePhoneNumber(num) {
